@@ -17,23 +17,28 @@ FONTNAME = "/usr/share/fonts/truetype/noto/NotoSerif-Italic.ttf"
 TEXTMARGIN = 5
 DEBUG = len(sys.argv) > 1 and sys.argv[1] == "debug"
 
-last_log = datetime.datetime.now()
-
+start_log = datetime.datetime.now()
+last_log = start_log
 
 def _log(msg: str) -> None:
     global last_log
     now = datetime.datetime.now()
     diff = (now - last_log).total_seconds()
+    from_start = (now - start_log).total_seconds()
     last_log = now
-    print(f"[+{diff:.2f}]\t{msg}")
+    print(f"[{from_start:5.2f} +{diff:.2f} ]\t{msg}")
 
 
-def _image() -> io.BytesIO:
+def _image() -> Image:
     _log("Download image")
-    fd = urllib.request.urlopen(f"https://source.unsplash.com/random/{WIDTH}x{HEIGHT}")
-    content = fd.read()
-    _log("Image downloaded")
-    return io.BytesIO(content)
+    try:
+        fd = urllib.request.urlopen(f"https://source.unsplash.com/random/{WIDTH}x{HEIGHT}")
+        content = fd.read()
+        _log("Image downloaded")
+        return Image.open(io.BytesIO(content))
+    except Exception as e:
+        _log(f"Failed download: {e}")
+        return Image.open("tomato.jpg")
 
 
 class DitheringModes(Enum):
@@ -68,7 +73,7 @@ def _dithered(
 
 inky = Inky()
 
-image = Image.open(_image()).convert("RGB")
+image = _image().convert("RGB")
 # image = Image.open("tomato.jpg")
 
 # Make it "pop"
