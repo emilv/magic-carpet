@@ -9,6 +9,8 @@ import hitherdither
 from PIL import Image, ImageDraw, ImageEnhance, ImageFont
 from inky.inky_uc8159 import Inky
 
+from clear import clear
+
 WIDTH, HEIGHT = 600, 448
 SATURATION = 0.8
 FONTNAME = "/usr/share/fonts/truetype/noto/NotoSerif-Italic.ttf"
@@ -64,27 +66,22 @@ def _dithered(
     return image_dithered
 
 
-def _clear(inky: Inky):
-    if DEBUG:
-        return
-    for y in range(inky.height - 1):
-        for x in range(inky.width - 1):
-            inky.set_pixel(x, y, Inky.CLEAN)
-    inky.show()
-
-
 inky = Inky()
 
-image = Image.open(_image()).convert("RGBA")
+image = Image.open(_image()).convert("RGB")
 # image = Image.open("tomato.jpg")
 
 # Make it "pop"
 enhance = ImageEnhance.Contrast(image)
 image = enhance.enhance(2)
 
+# Dither image before converting to RGBA to make text outline smoother
+image = _dithered(inky, image).convert("RGBA")
+
 # Draw text
 text_image = Image.new("RGBA", image.size, (255, 255, 255, 0))
 draw = ImageDraw.Draw(text_image)
+#draw.fontmode = "1"  # Disable anti-aliasing
 
 quote = "Fånga dagen"
 while True:
@@ -119,7 +116,7 @@ if DEBUG:
 else:
     if random.randint(0, 5) == 2:
         _log("Clearing image")
-        _clear(inky)
+        clear(inky)
     _log("Showing image")
     inky.set_image(image, saturation=SATURATION)
     inky.show()
