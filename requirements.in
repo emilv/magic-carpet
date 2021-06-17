@@ -1,0 +1,5 @@
+inky[rpi,fonts]
+pillow
+numpy
+
+git+https://www.github.com/hbldh/hitherdither
