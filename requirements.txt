@@ -4,6 +4,10 @@
 #
 #    pip-compile
 #
+colormath==3.0.0
+    # via -r requirements.in
+decorator==4.4.2
+    # via networkx
 font-fredoka-one==0.0.4
     # via inky
 font-hanken-grotesk==0.0.2
@@ -16,9 +20,12 @@ git+https://www.github.com/hbldh/hitherdither
     # via -r requirements.in
 inky[fonts,rpi]==1.2.0
     # via -r requirements.in
+networkx==2.5.1
+    # via colormath
 numpy==1.20.3
     # via
     #   -r requirements.in
+    #   colormath
     #   hitherdither
     #   inky
 pillow==8.2.0

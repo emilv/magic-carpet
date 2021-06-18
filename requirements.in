@@ -1,5 +1,6 @@
 inky[rpi,fonts]
 pillow
 numpy
+colormath
 
 git+https://www.github.com/hbldh/hitherdither
