@@ -1,5 +1,7 @@
+import math
 import random
 import sys
+import time
 from concurrent.futures import ThreadPoolExecutor
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFont
@@ -22,11 +24,15 @@ def _get_enhanced_image() -> Image:
 
     # Make it "pop"
     enhance = ImageEnhance.Contrast(image)
-    return enhance.enhance(2)
+    return enhance.enhance(1.6)
 
 
-with ThreadPoolExecutor(max_workers=IMAGES) as executor:
-    images = list(executor.map(lambda _: _get_enhanced_image(), range(IMAGES)))
+#with ThreadPoolExecutor(max_workers=IMAGES) as executor:
+#    images = list(executor.map(lambda _: _get_enhanced_image(), range(IMAGES)))
+images = []
+for _ in range(IMAGES):
+    images.append(_get_enhanced_image())
+    time.sleep(1.0)
 
 image = None
 best_score = float("inf")
@@ -38,8 +44,8 @@ for i, current_image in enumerate(images):
         image = current_image
         best_score = current_score
 
-if DEBUG:
-    image.show()
+    if DEBUG:
+        current_image.show()
 
 image = image.convert("RGB")
 # image = Image.open("tomato.jpg")
@@ -65,7 +71,7 @@ while True:
     break
 text_x = random.randint(TEXTMARGIN, WIDTH - text_width - TEXTMARGIN)
 text_y = random.randint(TEXTMARGIN, HEIGHT - text_height - TEXTMARGIN)
-transparent = random.choice([True, False])
+transparent = False and random.choice([True, False])
 log(f"Transparent text: {transparent}")
 
 draw.text(
@@ -84,7 +90,7 @@ if DEBUG:
     image = dithered(inky, image)
     image.show()
 else:
-    if random.randint(0, 5) == 2:
+    if True or random.randint(0, 5) == 2:
         log("Clearing image")
         clear(inky)
     log("Showing image")

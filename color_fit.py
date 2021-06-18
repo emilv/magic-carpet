@@ -1,7 +1,9 @@
 import random
 from collections import defaultdict
 
+import colorio
 from PIL import Image
+from colorio.cs import CIELAB, SrgbLinear
 from colormath.color_objects import LabColor, XYZColor, sRGBColor
 from colormath.color_conversions import convert_color
 from colormath.color_diff import delta_e_cie1976, delta_e_cie1994, delta_e_cie2000
@@ -35,19 +37,23 @@ def color_fit(inky: Inky, image: Image) -> float:
     return mse
 
 def _lab_color(color):
-    r, g, b = color
-    rgb = sRGBColor(r, g, b, is_upscaled=True)
-    lab = convert_color(rgb, LabColor)
+    #r, g, b = color
+    # rgb = sRGBColor(r, g, b, is_upscaled=True)
+    # lab = convert_color(rgb, LabColor)
+    lab = CIELAB().from_rgb255(color)
     return lab
 
-def color_score(rgb, palette) -> float:
+def color_score(rgb, palette):
     a = _lab_color(rgb)
     best_diff = float("inf")
     for b in palette:
         #diff = delta_e_cie2000(a, b)
         #diff = delta_e_cie1976(a, b)
-        diff = delta_e_cie1994(a, b)
+        #diff = delta_e_cie1994(a, b)
+        diff = colorio.diff.ciede2000(a, b)
+        #diff = colorio.diff.cie94(a, b)
         best_diff = min(diff, best_diff)
+
     return best_diff
 
 
