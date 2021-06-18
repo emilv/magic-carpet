@@ -16,8 +16,17 @@ DEBUG = len(sys.argv) > 1 and sys.argv[1] == "debug"
 
 inky = Inky()
 
+
+def _get_enhanced_image() -> Image:
+    image = get_image().convert("RGB")
+
+    # Make it "pop"
+    enhance = ImageEnhance.Contrast(image)
+    return enhance.enhance(2)
+
+
 with ThreadPoolExecutor(max_workers=IMAGES) as executor:
-    images = list(executor.map(lambda _: get_image(), range(IMAGES)))
+    images = list(executor.map(lambda _: _get_enhanced_image(), range(IMAGES)))
 
 image = None
 best_score = float("inf")
@@ -29,12 +38,11 @@ for i, current_image in enumerate(images):
         image = current_image
         best_score = current_score
 
+if DEBUG:
+    image.show()
+
 image = image.convert("RGB")
 # image = Image.open("tomato.jpg")
-
-# Make it "pop"
-enhance = ImageEnhance.Contrast(image)
-image = enhance.enhance(2)
 
 # Dither image before converting to RGBA to make text outline smoother
 image = dithered(inky, image).convert("RGBA")
@@ -42,7 +50,7 @@ image = dithered(inky, image).convert("RGBA")
 # Draw text
 text_image = Image.new("RGBA", image.size, (255, 255, 255, 0))
 draw = ImageDraw.Draw(text_image)
-#draw.fontmode = "1"  # Disable anti-aliasing
+# draw.fontmode = "1"  # Disable anti-aliasing
 
 quote = "Fånga dagen"
 while True:
