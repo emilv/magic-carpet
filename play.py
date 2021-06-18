@@ -45,7 +45,8 @@ image = image.convert("RGB")
 # image = Image.open("tomato.jpg")
 
 # Dither image before converting to RGBA to make text outline smoother
-image = dithered(inky, image).convert("RGBA")
+# image = dithered(inky, image).convert("RGBA")
+image = image.convert("RGBA")
 
 # Draw text
 text_image = Image.new("RGBA", image.size, (255, 255, 255, 0))
