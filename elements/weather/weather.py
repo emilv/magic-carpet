@@ -5,7 +5,7 @@ from collections import namedtuple
 from datetime import datetime, timezone
 from typing import cast
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from dateutil.parser import isoparse
 
 from .forecast_types import ForecastDict, ForecastData
@@ -57,7 +57,10 @@ def _temperatures(forecast: ForecastData) -> Temperatures:
 
 
 def _stitch(forecast: ForecastData, width: int, height: int) -> Image:
-    backdrop_color = (0, 0, 0)
+    font_name = "/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"
+    font_color = (255, 50, 50)
+    font_size = 20
+    backdrop_color = (50, 50, 50)
     ellipse_dimensions = (126, 105)
     symbol_dimensions = (105, 105)
     center_x, center_y = (500, 100)
@@ -73,16 +76,35 @@ def _stitch(forecast: ForecastData, width: int, height: int) -> Image:
         center_x - rotated_ellipse.width // 2,
         center_y - rotated_ellipse.height // 2,
     )
-    backdrop.paste(rotated_ellipse, ellipse_placement, mask=rotated_ellipse)
+    backdrop.alpha_composite(rotated_ellipse, ellipse_placement)
 
-    # Time for the weather symbol
+    # Weather symbol
     symbol_code = _symbol(forecast)
     symbol = _symbol_image(symbol_code).resize(symbol_dimensions)
     symbol_placement = (
         center_x - symbol.width // 2,
         center_y - symbol.height // 2 - 20,
     )
-    backdrop.paste(symbol, symbol_placement, mask=symbol)
+    backdrop.alpha_composite(symbol, symbol_placement)
+
+    # Temperature
+    text_image = Image.new("RGBA", (width, height), (255, 255, 255, 0))
+    text_draw = ImageDraw.Draw(text_image)
+    temperatures = _temperatures(forecast)
+    text = f"{temperatures.min:.0f} - {temperatures.max:.0f} ℃"
+    font = ImageFont.truetype(font_name, size=font_size)
+    text_width, text_height = font.getsize(text)
+    text_placement = (
+        center_x - text_width // 2,
+        center_y + 10,
+    )
+    text_draw.text(
+        text_placement,
+        text,
+        fill=font_color,
+        font=font,
+    )
+    backdrop.alpha_composite(text_image)
 
     return backdrop
 
