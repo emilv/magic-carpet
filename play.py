@@ -1,86 +1,23 @@
 import random
 import sys
-import time
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFont
 from inky.inky_uc8159 import Inky
 
-import color_fit
+import background.unsplash
+import elements.carpe_diem
 from clear import clear
-from utils import dithered, get_image, log, WIDTH, HEIGHT, SATURATION
+from utils import dithered, log, WIDTH, HEIGHT, SATURATION
 
-IMAGES = 3
-FONTNAME = "/usr/share/fonts/truetype/noto/NotoSerif-Italic.ttf"
 TEXTMARGIN = 8
 DEBUG = len(sys.argv) > 1 and sys.argv[1] == "debug"
 
 inky = Inky()
 
+background_image = background.unsplash.get_best_image(inky)
+text_image = elements.carpe_diem.get_carpe_diem(WIDTH, HEIGHT)
 
-def _get_enhanced_image() -> Image:
-    image = get_image().convert("RGB")
-
-    # Make it "pop"
-    enhance = ImageEnhance.Contrast(image)
-    return enhance.enhance(1.6)
-
-
-images = []
-for _ in range(IMAGES):
-    images.append(_get_enhanced_image())
-    time.sleep(1.0)
-
-image = None
-best_score = float("inf")
-for i, current_image in enumerate(images):
-    current_score = color_fit.color_fit(inky, current_image)
-    log(f"Score: {current_score}")
-    if current_score < best_score:
-        log(f"Better. Using image {i}")
-        image = current_image
-        best_score = current_score
-
-    if DEBUG:
-        current_image.show()
-
-image = image.convert("RGB")
-# image = Image.open("tomato.jpg")
-
-# Dither image before converting to RGBA to make text outline smoother
-# image = dithered(inky, image).convert("RGBA")
-image = image.convert("RGBA")
-
-# Draw text
-text_image = Image.new("RGBA", image.size, (255, 255, 255, 0))
-draw = ImageDraw.Draw(text_image)
-# draw.fontmode = "1"  # Disable anti-aliasing
-
-quote = "Fånga dagen"
-while True:
-    font_size = random.randint(45, 140)
-    log(f"Font size: {font_size}")
-    font = ImageFont.truetype(FONTNAME, size=font_size)
-    text_width, text_height = font.getsize(quote, stroke_width=1)
-    if text_width > WIDTH - 2 * TEXTMARGIN:
-        log(f"Font size {font_size} results in width {text_width}. Trying again")
-        continue
-    break
-text_x = random.randint(TEXTMARGIN, WIDTH - text_width - TEXTMARGIN)
-text_y = random.randint(TEXTMARGIN, HEIGHT - text_height - TEXTMARGIN)
-transparent = False and random.choice([True, False])
-log(f"Transparent text: {transparent}")
-
-draw.text(
-    (text_x, text_y),
-    quote,
-    fill=(255, 255, 255, 150 if transparent else 255),
-    font=font,
-    stroke_width=1,
-    stroke_fill=(0, 0, 0),
-)
-
-image = Image.alpha_composite(image, text_image)
-image = image.convert("RGB")
+result_image = Image.alpha_composite(background_image, text_image).convert("RGB")
 
 
 def _display_debug(inky, image):
@@ -90,15 +27,15 @@ def _display_debug(inky, image):
 
 def _display_frame(inky, image):
     if random.randint(0, 5) == 3:
-        log("Clearing image")
+        log("Clear frame")
         clear(inky)
-    log("Showing image")
+    log("Show image")
     inky.set_image(image, saturation=SATURATION)
     inky.show()
     log("Done")
 
 
 if DEBUG:
-    _display_debug(inky, image)
+    _display_debug(inky, result_image)
 else:
-    _display_frame(inky, image)
+    _display_frame(inky, result_image)

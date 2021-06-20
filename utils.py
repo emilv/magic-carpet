@@ -25,7 +25,7 @@ def log(msg: str) -> None:
 
 
 def get_image() -> Image:
-    log("Download image")
+    log("Download background_image")
     try:
         fd = urllib.request.urlopen(f"https://source.unsplash.com/random/{WIDTH}x{HEIGHT}")
         content = fd.read()
