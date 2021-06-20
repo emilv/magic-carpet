@@ -18,11 +18,11 @@ load_dotenv()
 
 inky = Inky()
 background_image = background.unsplash.get_best_image(inky)
-text_image = elements.carpe_diem.get_carpe_diem(WIDTH, HEIGHT)
+#text_image = elements.carpe_diem.get_carpe_diem(WIDTH, HEIGHT)
 weather_image = elements.weather.weather.get_image(WIDTH, HEIGHT)
 
 result_image = background_image
-result_image = Image.alpha_composite(result_image, text_image)
+#result_image = Image.alpha_composite(result_image, text_image)
 result_image = Image.alpha_composite(result_image, weather_image)
 result_image = result_image.convert("RGB")
 
