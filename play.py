@@ -1,8 +1,6 @@
-import math
 import random
 import sys
 import time
-from concurrent.futures import ThreadPoolExecutor
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFont
 from inky.inky_uc8159 import Inky
@@ -13,7 +11,7 @@ from utils import dithered, get_image, log, WIDTH, HEIGHT, SATURATION
 
 IMAGES = 3
 FONTNAME = "/usr/share/fonts/truetype/noto/NotoSerif-Italic.ttf"
-TEXTMARGIN = 5
+TEXTMARGIN = 8
 DEBUG = len(sys.argv) > 1 and sys.argv[1] == "debug"
 
 inky = Inky()
