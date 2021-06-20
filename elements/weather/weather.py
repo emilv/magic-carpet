@@ -3,7 +3,7 @@ import os
 import urllib.request
 from collections import namedtuple
 from datetime import datetime, timezone
-from typing import Tuple, cast
+from typing import cast
 
 from PIL import Image, ImageDraw
 from dateutil.parser import isoparse

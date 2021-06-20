@@ -1,7 +1,7 @@
 import random
 import sys
 
-from PIL import Image, ImageDraw, ImageEnhance, ImageFont
+from PIL import Image
 from dotenv import load_dotenv
 from inky.inky_uc8159 import Inky
 
