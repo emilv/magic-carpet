@@ -1,0 +1,3 @@
+[submodule "yr-weather-symbols"]
+	path = yr-weather-symbols
+	url = https://github.com/nrkno/yr-weather-symbols.git

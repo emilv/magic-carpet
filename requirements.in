@@ -3,5 +3,7 @@ pillow
 numpy
 colormath
 colorio
+python-dotenv
+python-dateutil
 
 git+https://www.github.com/hbldh/hitherdither
