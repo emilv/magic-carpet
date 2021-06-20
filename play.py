@@ -91,7 +91,6 @@ def _display_debug(inky, image):
 
 
 def _display_frame(inky, image):
-    image = image.rotate(-90, expand=1)
     if random.randint(0, 5) == 3:
         log("Clearing image")
         clear(inky)
