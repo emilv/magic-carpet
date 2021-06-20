@@ -27,8 +27,6 @@ def _get_enhanced_image() -> Image:
     return enhance.enhance(1.6)
 
 
-#with ThreadPoolExecutor(max_workers=IMAGES) as executor:
-#    images = list(executor.map(lambda _: _get_enhanced_image(), range(IMAGES)))
 images = []
 for _ in range(IMAGES):
     images.append(_get_enhanced_image())
@@ -86,14 +84,24 @@ draw.text(
 image = Image.alpha_composite(image, text_image)
 image = image.convert("RGB")
 
-if DEBUG:
+
+def _display_debug(inky, image):
     image = dithered(inky, image)
     image.show()
-else:
-    if True or random.randint(0, 5) == 2:
+
+
+def _display_frame(inky, image):
+    image = image.rotate(-90, expand=1)
+    if random.randint(0, 5) == 3:
         log("Clearing image")
         clear(inky)
     log("Showing image")
     inky.set_image(image, saturation=SATURATION)
     inky.show()
     log("Done")
+
+
+if DEBUG:
+    _display_debug(inky, image)
+else:
+    _display_frame(inky, image)

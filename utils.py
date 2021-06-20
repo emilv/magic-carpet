@@ -8,7 +8,7 @@ import hitherdither
 from PIL import Image
 from inky.inky_uc8159 import Inky
 
-WIDTH, HEIGHT = 600, 448
+WIDTH, HEIGHT = 448, 600
 SATURATION = 0.8
 
 start_log = datetime.datetime.now()
