@@ -3,7 +3,7 @@ import os
 import time
 import urllib.request
 
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageEnhance, ImageOps
 from inky.inky_uc8159 import Inky
 
 import color_fit
@@ -17,7 +17,9 @@ def _get_enhanced_image() -> Image:
 
     # Make it "pop"
     #return ImageEnhance.Contrast(image).enhance(1.4)
-    return ImageEnhance.Color(image).enhance(1.5)
+    enhanced = ImageEnhance.Color(image).enhance(1.5)
+    contrast = ImageOps.autocontrast(enhanced)
+    return contrast
 
 
 def get_best_image(inky: Inky) -> Image:
