@@ -11,7 +11,7 @@ import color_fit
 from clear import clear
 from utils import dithered, get_image, log, WIDTH, HEIGHT, SATURATION
 
-IMAGES = 4
+IMAGES = 3
 FONTNAME = "/usr/share/fonts/truetype/noto/NotoSerif-Italic.ttf"
 TEXTMARGIN = 5
 DEBUG = len(sys.argv) > 1 and sys.argv[1] == "debug"

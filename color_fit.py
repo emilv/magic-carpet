@@ -1,4 +1,5 @@
 import random
+import time
 from collections import defaultdict
 
 import colorio
@@ -13,12 +14,19 @@ import numpy
 
 from utils import SATURATION, chunks, log
 
+
 def color_fit(inky: Inky, image: Image) -> float:
     inky_palette = inky._palette_blend(SATURATION, dtype="uint8")
-    palette = [_lab_color(color) for color in chunks(inky_palette[:-3], 3)]
+    palette = [
+        _lab_color(color)
+        for color in chunks(inky_palette[:-3], 3)
+        if color not in [[0, 0, 0], [255, 255, 255]]
+    ]
 
     log("Create histogram")
     histogram = color_histogram(image)
+    histogram.pop((255, 255, 255), None)
+    histogram.pop((0, 0, 0), None)
 
     log("Calculate color errors")
     sample_count = sum(histogram.values())
@@ -36,22 +44,26 @@ def color_fit(inky: Inky, image: Image) -> float:
     log("Found fit!")
     return mse
 
+
 def _lab_color(color):
-    #r, g, b = color
+    # r, g, b = color
     # rgb = sRGBColor(r, g, b, is_upscaled=True)
     # lab = convert_color(rgb, LabColor)
     lab = CIELAB().from_rgb255(color)
     return lab
 
+
 def color_score(rgb, palette):
     a = _lab_color(rgb)
     best_diff = float("inf")
     for b in palette:
-        #diff = delta_e_cie2000(a, b)
-        #diff = delta_e_cie1976(a, b)
-        #diff = delta_e_cie1994(a, b)
-        diff = colorio.diff.ciede2000(a, b)
-        #diff = colorio.diff.cie94(a, b)
+        # diff = delta_e_cie2000(a, b)
+        # diff = delta_e_cie1976(a, b)
+        # diff = delta_e_cie1994(a, b)
+        # Modifying k_L in ciede2000 means putting less imprtance on the luminostiy of the color
+        # This allows increased dithering
+        diff = colorio.diff.ciede2000(a, b, k_L=2.0, k_H=1.0)
+        # diff = colorio.diff.cie94(a, b)
         best_diff = min(diff, best_diff)
 
     return best_diff
@@ -79,4 +91,5 @@ if __name__ == "__main__":
         image = get_image()
         image.show(title=f"Image {i}")
         result = color_fit(Inky(), image)
+        time.sleep(1.0)
         print(f"Image {i}: {result}")
