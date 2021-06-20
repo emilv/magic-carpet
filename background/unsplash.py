@@ -1,10 +1,12 @@
+import io
 import time
+import urllib.request
 
 from PIL import Image, ImageEnhance
 from inky.inky_uc8159 import Inky
 
 import color_fit
-from utils import get_image, log
+from utils import HEIGHT, WIDTH, log
 
 IMAGES = 3
 
@@ -13,8 +15,8 @@ def _get_enhanced_image() -> Image:
     image = get_image().convert("RGB")
 
     # Make it "pop"
-    enhance = ImageEnhance.Contrast(image)
-    return enhance.enhance(1.6)
+    #return ImageEnhance.Contrast(image).enhance(1.4)
+    return ImageEnhance.Color(image).enhance(1.5)
 
 
 def get_best_image(inky: Inky) -> Image:
@@ -34,3 +36,15 @@ def get_best_image(inky: Inky) -> Image:
             best_score = current_score
 
     return image.convert("RGBA")
+
+
+def get_image() -> Image:
+    log("Download background_image")
+    try:
+        fd = urllib.request.urlopen(f"https://source.unsplash.com/random/{WIDTH}x{HEIGHT}")
+        content = fd.read()
+        log("Image downloaded")
+        return Image.open(io.BytesIO(content))
+    except Exception as e:
+        log(f"Failed download: {e}")
+        return Image.open("tomato.jpg")

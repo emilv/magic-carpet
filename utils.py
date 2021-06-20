@@ -1,7 +1,4 @@
 import datetime
-import io
-import random
-import urllib.request
 from enum import Enum
 
 import hitherdither
@@ -9,7 +6,7 @@ from PIL import Image
 from inky.inky_uc8159 import Inky
 
 WIDTH, HEIGHT = 600, 448
-SATURATION = 0.8
+SATURATION = 1.0
 
 start_log = datetime.datetime.now()
 last_log = start_log
@@ -22,18 +19,6 @@ def log(msg: str) -> None:
     from_start = (now - start_log).total_seconds()
     last_log = now
     print(f"[{from_start:5.2f} +{diff:.2f} ]\t{msg}")
-
-
-def get_image() -> Image:
-    log("Download background_image")
-    try:
-        fd = urllib.request.urlopen(f"https://source.unsplash.com/random/{WIDTH}x{HEIGHT}")
-        content = fd.read()
-        log("Image downloaded")
-        return Image.open(io.BytesIO(content))
-    except Exception as e:
-        log(f"Failed download: {e}")
-        return Image.open("tomato.jpg")
 
 
 class DitheringModes(Enum):

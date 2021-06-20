@@ -85,7 +85,7 @@ def color_histogram(image: Image):
 
 
 if __name__ == "__main__":
-    from utils import get_image
+    from background.unsplash import get_image
 
     for i in range(3):
         image = get_image()
