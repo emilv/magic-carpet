@@ -2,6 +2,7 @@ import random
 import sys
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFont
+from dotenv import load_dotenv
 from inky.inky_uc8159 import Inky
 
 import background.unsplash
@@ -12,8 +13,9 @@ from utils import dithered, log, WIDTH, HEIGHT, SATURATION
 TEXTMARGIN = 8
 DEBUG = len(sys.argv) > 1 and sys.argv[1] == "debug"
 
-inky = Inky()
+load_dotenv()
 
+inky = Inky()
 background_image = background.unsplash.get_best_image(inky)
 text_image = elements.carpe_diem.get_carpe_diem(WIDTH, HEIGHT)
 

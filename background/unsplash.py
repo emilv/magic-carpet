@@ -1,4 +1,5 @@
 import io
+import os
 import time
 import urllib.request
 
@@ -41,7 +42,13 @@ def get_best_image(inky: Inky) -> Image:
 def get_image() -> Image:
     log("Download background_image")
     try:
-        fd = urllib.request.urlopen(f"https://source.unsplash.com/random/{WIDTH}x{HEIGHT}")
+        req = urllib.request.Request(
+            url=f"https://source.unsplash.com/random/{WIDTH}x{HEIGHT}",
+            headers={
+                'User-Agent': os.getenv("USER_AGENT"),
+            }
+        )
+        fd = urllib.request.urlopen(req)
         content = fd.read()
         log("Image downloaded")
         return Image.open(io.BytesIO(content))

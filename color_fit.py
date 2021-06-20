@@ -8,6 +8,7 @@ from colorio.cs import CIELAB, SrgbLinear
 from colormath.color_objects import LabColor, XYZColor, sRGBColor
 from colormath.color_conversions import convert_color
 from colormath.color_diff import delta_e_cie1976, delta_e_cie1994, delta_e_cie2000
+from dotenv import load_dotenv
 from inky.inky_uc8159 import Inky
 import numpy
 
@@ -85,6 +86,7 @@ def color_histogram(image: Image):
 
 
 if __name__ == "__main__":
+    load_dotenv()
     from background.unsplash import get_image
 
     for i in range(3):
