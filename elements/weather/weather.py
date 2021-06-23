@@ -61,7 +61,7 @@ def _stitch(forecast: ForecastData, width: int, height: int) -> Image:
     font_name = "/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"
     font_color = (255, 255, 255)
     font_size = 20
-    backdrop_color = (0, 0, 0)
+    backdrop_color = (0, 255, 0)
     ellipse_dimensions = (126, 105)
     symbol_dimensions = (105, 105)
     center_x, center_y = random.choice([
@@ -70,6 +70,8 @@ def _stitch(forecast: ForecastData, width: int, height: int) -> Image:
         (100, 100),
         (100, 348),
     ])
+    center_x += random.randint(-10, 10)
+    center_y += random.randint(-10, 10)
 
     backdrop = Image.new("RGBA", (width, height), (255, 255, 255, 0))
 
