@@ -6,9 +6,10 @@ from collections import namedtuple
 from datetime import datetime, timezone
 from typing import cast
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 from dateutil.parser import isoparse
 
+from outline import stroke
 from .forecast_types import ForecastDict, ForecastData
 
 
@@ -61,8 +62,8 @@ def _stitch(forecast: ForecastData, width: int, height: int) -> Image:
     font_name = "/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"
     font_color = (255, 255, 255)
     font_size = 25
-    text_stroke_width=3
-    backdrop_color = (0, 255, 0)
+    text_stroke_width = 3
+    backdrop_color = (0, 0, 0)
     ellipse_dimensions = (126, 105)
     symbol_dimensions = (105, 105)
     center_x, center_y = random.choice([
@@ -89,8 +90,10 @@ def _stitch(forecast: ForecastData, width: int, height: int) -> Image:
 
     # Weather symbol
     symbol_code = _symbol(forecast)
-    symbol = _symbol_image(symbol_code).resize(symbol_dimensions)
-    symbol_outline = symbol
+    symbol_raw = _symbol_image(symbol_code).resize(symbol_dimensions)
+    stroke1 = stroke(symbol_raw, threshold=0, stroke_size=3, color=(0, 0, 0))
+    symbol = stroke1
+
     symbol_placement = (
         center_x - symbol.width // 2,
         center_y - symbol.height // 2 - 20,

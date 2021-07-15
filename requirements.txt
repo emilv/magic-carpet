@@ -40,6 +40,9 @@ numpy==1.20.3
     #   hitherdither
     #   inky
     #   matplotlib
+    #   opencv-python
+opencv-python==4.5.3.56
+    # via -r requirements.in
 pillow==8.2.0
     # via
     #   -r requirements.in

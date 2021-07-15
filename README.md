@@ -5,6 +5,7 @@ Secret military operation
 ```bash
 sudo apt install python3 python3-pip
 sudo apt install libatlas-base-dev libopenjp2-7 libtiff5
+sudo apt install libatlas-base-dev libjasper-dev libqtgui4 python3-pyqt5 libqt4-test libilmbase-dev libopenexr-dev libgstreamer1.0-dev libavcodec58 libavformat58 libswscale5
 sudo apt install fonts-dejavu fonts-noto-color-emoji fonts-noto-core
 ```
 
