@@ -60,7 +60,8 @@ def _temperatures(forecast: ForecastData) -> Temperatures:
 def _stitch(forecast: ForecastData, width: int, height: int) -> Image:
     font_name = "/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"
     font_color = (255, 255, 255)
-    font_size = 20
+    font_size = 25
+    text_stroke_width=3
     backdrop_color = (0, 255, 0)
     ellipse_dimensions = (126, 105)
     symbol_dimensions = (105, 105)
@@ -89,6 +90,7 @@ def _stitch(forecast: ForecastData, width: int, height: int) -> Image:
     # Weather symbol
     symbol_code = _symbol(forecast)
     symbol = _symbol_image(symbol_code).resize(symbol_dimensions)
+    symbol_outline = symbol
     symbol_placement = (
         center_x - symbol.width // 2,
         center_y - symbol.height // 2 - 20,
@@ -101,14 +103,14 @@ def _stitch(forecast: ForecastData, width: int, height: int) -> Image:
     temperatures = _temperatures(forecast)
     text = f"{temperatures.min:.0f} - {temperatures.max:.0f} ℃"
     font = ImageFont.truetype(font_name, size=font_size)
-    text_width, text_height = font.getsize(text, stroke_width=2)
-    text_placement = (center_x - text_width // 2, center_y + 10)
+    text_width, text_height = font.getsize(text, stroke_width=text_stroke_width)
+    text_placement = (center_x - text_width // 2 + 3, center_y + 14)
     text_draw.text(
         text_placement,
         text,
         fill=font_color,
         font=font,
-        stroke_width=2,
+        stroke_width=text_stroke_width,
         stroke_fill=(0, 0, 0),
     )
     backdrop.alpha_composite(text_image)
