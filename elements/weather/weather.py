@@ -104,7 +104,10 @@ def _stitch(forecast: ForecastData, width: int, height: int) -> Image:
     text_image = Image.new("RGBA", (width, height), (255, 255, 255, 0))
     text_draw = ImageDraw.Draw(text_image)
     temperatures = _temperatures(forecast)
-    text = f"{temperatures.min:.0f} - {temperatures.max:.0f} ℃"
+    if abs(temperatures.min - temperatures.max) < 2:
+        text = f"{temperatures.min:.0f} ℃"
+    else:
+        text = f"{temperatures.min:.0f} - {temperatures.max:.0f} ℃"
     font = ImageFont.truetype(font_name, size=font_size)
     text_width, text_height = font.getsize(text, stroke_width=text_stroke_width)
     text_placement = (center_x - text_width // 2 + 3, center_y + 14)
